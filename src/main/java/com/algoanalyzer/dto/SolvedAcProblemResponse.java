@@ -36,6 +36,7 @@ public class SolvedAcProblemResponse {
     private String output;
 
     @Getter
+    @Setter
     @NoArgsConstructor
     public static class ProblemTag {
         @JsonProperty("key")
@@ -46,6 +47,7 @@ public class SolvedAcProblemResponse {
     }
 
     @Getter
+    @Setter
     @NoArgsConstructor
     public static class DisplayName {
         @JsonProperty("language")
