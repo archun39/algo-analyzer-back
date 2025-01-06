@@ -11,7 +11,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProblemNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleProblemNotFoundException(ProblemNotFoundException e) {
         return ResponseEntity.notFound()
-                .body(new ErrorResponse(e.getMessage()));
+                .build()
+                .ok(new ErrorResponse(e.getMessage()));
     }
 
     @Getter

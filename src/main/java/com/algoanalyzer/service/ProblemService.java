@@ -2,6 +2,7 @@ package com.algoanalyzer.service;
 
 import com.algoanalyzer.dto.ProblemResponseDto;
 import com.algoanalyzer.dto.SolvedAcProblemResponse;
+import com.algoanalyzer.dto.SolvedAcProblemResponse.DisplayName;
 import com.algoanalyzer.exception.ProblemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
