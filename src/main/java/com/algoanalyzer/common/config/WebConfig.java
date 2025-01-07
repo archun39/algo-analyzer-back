@@ -1,4 +1,4 @@
-package com.algoanalyzer.config;
+package com.algoanalyzer.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

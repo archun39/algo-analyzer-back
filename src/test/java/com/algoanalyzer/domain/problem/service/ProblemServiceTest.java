@@ -1,4 +1,4 @@
-package com.algoanalyzer.service;
+package com.algoanalyzer.domain.problem.service;
 
 import com.algoanalyzer.dto.ProblemResponseDto;
 import com.algoanalyzer.dto.SolvedAcProblemResponse;
