@@ -75,6 +75,7 @@ yarn-error.log*
 .env.*
 
 # Gradle
+problems-report.html
 .gradle
 **/build/
 !src/**/build/
