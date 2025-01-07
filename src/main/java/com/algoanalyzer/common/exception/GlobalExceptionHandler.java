@@ -1,5 +1,6 @@
-package com.algoanalyzer.exception;
+package com.algoanalyzer.common.exception;
 
+import com.algoanalyzer.domain.problem.exception.ProblemNotFoundException;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,8 +12,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProblemNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleProblemNotFoundException(ProblemNotFoundException e) {
         return ResponseEntity.notFound()
-                .build()
-                .ok(new ErrorResponse(e.getMessage()));
+                .build();
     }
 
     @Getter

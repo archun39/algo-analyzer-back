@@ -1,19 +1,15 @@
-package com.algoanalyzer.service;
+package com.algoanalyzer.domain.problem.service;
 
-import com.algoanalyzer.dto.ProblemResponseDto;
-import com.algoanalyzer.dto.SolvedAcProblemResponse;
-import com.algoanalyzer.dto.SolvedAcProblemResponse.DisplayName;
-import com.algoanalyzer.exception.ProblemNotFoundException;
+import com.algoanalyzer.domain.problem.api.dto.SolvedAcProblemResponse;
+import com.algoanalyzer.domain.problem.dto.response.ProblemResponseDto;
+import com.algoanalyzer.domain.problem.exception.ProblemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-
-import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
@@ -35,14 +31,11 @@ public class ProblemService {
                 throw new ProblemNotFoundException("문제를 찾을 수 없습니다: " + problemId);
             }
             
-            // 백준 웹사이트에서 문제 설명, 입력, 출력 정보 가져오기
+            // 백준 웹사이트에서 문제 상세 정보 크롤링
             fetchProblemDetails(problemId, response);
             
-            // 응답 변환
-            ProblemResponseDto result = convertToResponseDto(response);
-            
             log.info("문제 정보 조회 완료: {}", problemId);
-            return result;
+            return convertToResponseDto(response);
             
         } catch (Exception e) {
             log.error("문제 정보 조회 실패: {}", problemId, e);
@@ -73,19 +66,10 @@ public class ProblemService {
     }
 
     private ProblemResponseDto convertToResponseDto(SolvedAcProblemResponse response) {
-        String tags = response.getTags().stream()
-                .map(tag -> tag.getDisplayNames().stream()
-                        .filter(display -> "ko".equals(display.getLanguage()))
-                        .findFirst()
-                        .map(DisplayName::getName)
-                        .orElse(tag.getKey()))
-                .collect(Collectors.joining(", "));
-
         return ProblemResponseDto.builder()
                 .problemId(response.getProblemId())
                 .title(response.getTitleKo())
                 .level(String.valueOf(response.getLevel()))
-                .tags(tags)
                 .averageTries(response.getAverageTries())
                 .description(response.getDescription())
                 .input(response.getInput())

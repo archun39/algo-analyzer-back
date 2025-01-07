@@ -1,4 +1,4 @@
-package com.algoanalyzer.dto;
+package com.algoanalyzer.domain.problem.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

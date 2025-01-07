@@ -1,8 +1,8 @@
-package com.algoanalyzer.controller;
+package com.algoanalyzer.domain.problem.controller;
 
-import com.algoanalyzer.dto.ProblemRequestDto;
-import com.algoanalyzer.dto.ProblemResponseDto;
-import com.algoanalyzer.service.ProblemService;
+import com.algoanalyzer.domain.problem.dto.request.ProblemRequestDto;
+import com.algoanalyzer.domain.problem.dto.response.ProblemResponseDto;
+import com.algoanalyzer.domain.problem.service.ProblemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
