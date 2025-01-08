@@ -32,10 +32,12 @@ public class ProblemAnalysisService {
             
             HttpEntity<ProblemAnalysisRequestDto> entity = new HttpEntity<>(request, headers);
             
-            String url = pythonApiBaseUrl + "/analyze/problem";
-            ProblemAnalysisResponseDto problemAnalysisResponseDto = restTemplate.postForObject(url, entity, ProblemAnalysisResponseDto.class);
+            String url = pythonApiBaseUrl + "/api/analyze/problem";
             
-            return problemAnalysisResponseDto;
+            log.info("FastAPI 요� URL: {}", url);
+            log.info("요청 데이터: {}", request);
+            
+            return restTemplate.postForObject(url, entity, ProblemAnalysisResponseDto.class);
             
         } catch (Exception e) {
             log.error("문제 분석 실패", e);

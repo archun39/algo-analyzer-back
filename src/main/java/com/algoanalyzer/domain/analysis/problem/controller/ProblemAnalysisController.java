@@ -32,7 +32,6 @@ public class ProblemAnalysisController {
         // 문제 정보를 분석 요청 DTO에 설정
         request = ProblemAnalysisRequestDto.builder()
                 .problemId(problemInfo.getProblemId())
-                .title(problemInfo.getTitle())
                 .description(problemInfo.getDescription())
                 .input(problemInfo.getInput())
                 .output(problemInfo.getOutput())
