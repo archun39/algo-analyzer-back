@@ -62,6 +62,14 @@ public class ProblemService {
             Elements outputElement = doc.select("#problem_output");
             response.setOutput(outputElement.text());
             
+            // 시간 제한
+            Elements timeLimitElement = doc.select("#problem-info > tbody > tr > td:contains(시간 제한)");
+            response.setTimeLimit(timeLimitElement.text());
+            
+            // 메모리 제한
+            Elements memoryLimitElement = doc.select("#problem-info > tbody > tr > td:contains(메모리 제한)");
+            response.setMemoryLimit(memoryLimitElement.text());
+            
         } catch (Exception e) {
             log.warn("문제 상세 정보 조회 실패: {}", problemId, e);
         }
@@ -74,6 +82,8 @@ public class ProblemService {
                 .description(response.getDescription())
                 .input(response.getInput())
                 .output(response.getOutput())
+                .timeLimit(response.getTimeLimit())
+                .memoryLimit(response.getMemoryLimit())
                 .build();
     }
 } 

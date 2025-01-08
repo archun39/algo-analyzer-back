@@ -35,6 +35,12 @@ public class SolvedAcProblemResponse {
     
     @JsonProperty("output")
     private String output;
+    
+    @JsonProperty("timeLimit")
+    private String timeLimit;
+    
+    @JsonProperty("memoryLimit")
+    private String memoryLimit;
 
     @Getter
     @Setter

@@ -11,4 +11,6 @@ public class ProblemResponseDto {
     private String description;
     private String input;
     private String output;
+    private String timeLimit;
+    private String memoryLimit;
 } 
