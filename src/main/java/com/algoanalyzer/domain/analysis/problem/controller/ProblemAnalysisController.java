@@ -35,6 +35,9 @@ public class ProblemAnalysisController {
                 .description(problemInfo.getDescription())
                 .input(problemInfo.getInput())
                 .output(problemInfo.getOutput())
+                .timeLimit(problemInfo.getTimeLimit())
+                .memoryLimit(problemInfo.getMemoryLimit())
+                .tags(problemInfo.getTags())
                 .build();
         
         return ResponseEntity.ok(problemAnalysisService.analyzeProblem(request));

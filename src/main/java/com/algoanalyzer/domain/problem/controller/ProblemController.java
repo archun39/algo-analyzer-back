@@ -21,10 +21,6 @@ public class ProblemController {
     public ResponseEntity<ProblemResponseDto> getProblem(@PathVariable Long problemId) {
         ProblemResponseDto response = problemService.getProblem(problemId);
         
-        log.info("문제 정� 응답: {}", response);
-        log.info("시간 제한: {}", response.getTimeLimit());
-        log.info("메모리 제한: {}", response.getMemoryLimit());
-        
         return ResponseEntity.ok(response);
     }
 

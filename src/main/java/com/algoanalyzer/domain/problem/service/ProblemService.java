@@ -2,7 +2,6 @@ package com.algoanalyzer.domain.problem.service;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,6 +12,7 @@ import com.algoanalyzer.domain.problem.exception.ProblemNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -85,13 +85,16 @@ public class ProblemService {
 
     private ProblemResponseDto convertToResponseDto(SolvedAcProblemResponse response) {
         return ProblemResponseDto.builder()
-                .problemId(response.getProblemId())
-                .title(response.getTitleKo())      // solved.ac에서 가져온 제목
+                .problem_id(response.getProblemId())
+                .title(response.getTitleKo())
                 .description(response.getDescription())
                 .input(response.getInput())
                 .output(response.getOutput())
-                .timeLimit(response.getTimeLimit())
-                .memoryLimit(response.getMemoryLimit())
+                .time_limit(response.getTimeLimit())
+                .memory_limit(response.getMemoryLimit())
+                .tags(response.getTags().stream()
+                        .map(tag -> tag.getDisplayNames().get(0).getName())
+                        .collect(Collectors.toList()))
                 .build();
     }
 } 

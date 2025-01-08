@@ -34,9 +34,6 @@ public class ProblemAnalysisService {
             
             String url = pythonApiBaseUrl + "/api/analyze/problem";
             
-            log.info("FastAPI 요� URL: {}", url);
-            log.info("요청 데이터: {}", request);
-            
             return restTemplate.postForObject(url, entity, ProblemAnalysisResponseDto.class);
             
         } catch (Exception e) {
