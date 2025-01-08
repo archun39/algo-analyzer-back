@@ -2,6 +2,7 @@ package com.algoanalyzer.domain.problem.service;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -25,7 +26,7 @@ public class ProblemService {
         try {
             log.info("문제 정보 조회 시작: {}", problemId);
             
-            // solved.ac API 호출
+            // 1. solved.ac API에서 문제 제목과 태그 정보 가져오기
             String url = SOLVED_AC_API_URL + problemId;
             SolvedAcProblemResponse response = restTemplate.getForObject(url, SolvedAcProblemResponse.class);
             
@@ -33,7 +34,7 @@ public class ProblemService {
                 throw new ProblemNotFoundException("문제를 찾을 수 없습니다: " + problemId);
             }
             
-            // 백준 웹사이트에서 문제 상세 정보 크롤링
+            // 2. 백준 웹사이트에서 문제 상세 정보 크롤링
             fetchProblemDetails(problemId, response);
             
             log.info("문제 정보 조회 완료: {}", problemId);
@@ -52,33 +53,40 @@ public class ProblemService {
             
             // 문제 설명
             Elements descriptionElement = doc.select("#problem_description");
-            response.setDescription(descriptionElement.text());
+            if (!descriptionElement.isEmpty()) {
+                response.setDescription(descriptionElement.text());
+            }
             
             // 입력 설명
             Elements inputElement = doc.select("#problem_input");
-            response.setInput(inputElement.text());
+            if (!inputElement.isEmpty()) {
+                response.setInput(inputElement.text());
+            }
             
             // 출력 설명
             Elements outputElement = doc.select("#problem_output");
-            response.setOutput(outputElement.text());
+            if (!outputElement.isEmpty()) {
+                response.setOutput(outputElement.text());
+            }
             
-            // 시간 제한
-            Elements timeLimitElement = doc.select("#problem-info > tbody > tr > td:contains(시간 제한)");
-            response.setTimeLimit(timeLimitElement.text());
-            
-            // 메모리 제한
-            Elements memoryLimitElement = doc.select("#problem-info > tbody > tr > td:contains(메모리 제한)");
-            response.setMemoryLimit(memoryLimitElement.text());
+            Elements limitElement = doc.select("table#problem-info tbody tr");
+            if (!limitElement.isEmpty()) {
+                Elements tds = limitElement.select("td");
+                if (tds.size() >= 2) {
+                    response.setTimeLimit(tds.get(0).text());
+                    response.setMemoryLimit(tds.get(1).text());
+                }
+            }
             
         } catch (Exception e) {
-            log.warn("문제 상세 정보 조회 실패: {}", problemId, e);
+            log.error("문제 상세 정보 크롤링 실패: {}", problemId, e);
         }
     }
 
     private ProblemResponseDto convertToResponseDto(SolvedAcProblemResponse response) {
         return ProblemResponseDto.builder()
                 .problemId(response.getProblemId())
-                .title(response.getTitleKo())
+                .title(response.getTitleKo())      // solved.ac에서 가져온 제목
                 .description(response.getDescription())
                 .input(response.getInput())
                 .output(response.getOutput())
