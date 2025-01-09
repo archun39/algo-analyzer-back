@@ -31,12 +31,12 @@ public class ProblemAnalysisController {
         
         // 문제 정보를 분석 요청 DTO에 설정
         request = ProblemAnalysisRequestDto.builder()
-                .problemId(problemInfo.getProblemId())
+                .problemId(problemInfo.getProblem_id())
                 .description(problemInfo.getDescription())
                 .input(problemInfo.getInput())
                 .output(problemInfo.getOutput())
-                .timeLimit(problemInfo.getTimeLimit())
-                .memoryLimit(problemInfo.getMemoryLimit())
+                .timeLimit(problemInfo.getTime_limit())
+                .memoryLimit(problemInfo.getMemory_limit())
                 .tags(problemInfo.getTags())
                 .build();
         
