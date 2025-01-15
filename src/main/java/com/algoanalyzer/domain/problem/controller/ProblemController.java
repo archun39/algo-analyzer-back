@@ -18,7 +18,7 @@ public class ProblemController {
     private final ProblemService problemService;
     
     @GetMapping("/{problemId}")
-    public ResponseEntity<ProblemResponseDto> getProblem(@PathVariable Long problemId) {
+    public ResponseEntity<ProblemResponseDto> getProblem(@PathVariable int problemId) {
         ProblemResponseDto response = problemService.getProblem(problemId);
         
         return ResponseEntity.ok(response);
