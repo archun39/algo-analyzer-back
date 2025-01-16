@@ -32,13 +32,17 @@ public class ProblemAnalysisService {
             
             HttpEntity<ProblemAnalysisRequestDto> entity = new HttpEntity<>(request, headers);
             
-            String url = pythonApiBaseUrl + "/api/analyze";
+            String url = pythonApiBaseUrl + "/api/analyze/problem";
             
             log.info("FastAPI 요청 URL: {}", url);
             log.debug("요청 데이터: {}", request);
             
             // FastAPI로부터 분석 결과를 받아옴
-            return restTemplate.postForObject(url, entity, ProblemAnalysisResponseDto.class);
+            ProblemAnalysisResponseDto analysisResult = restTemplate.postForObject(url, entity, ProblemAnalysisResponseDto.class);
+            
+            log.info("분석 결과 수신: {}", analysisResult);
+            
+            return analysisResult;
             
         } catch (Exception e) {
             log.error("문제 분석 실패", e);

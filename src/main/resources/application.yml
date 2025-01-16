@@ -24,3 +24,8 @@ server:
 python:
   api:
     base-url: http://localhost:5000  # FastAPI 서버 주소를 5000번 포트로 변경
+
+logging:
+  level:
+    root: INFO
+    com.algoanalyzer: DEBUG

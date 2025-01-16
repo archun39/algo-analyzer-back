@@ -77,20 +77,12 @@ public class ProblemService {
             }
 
             // 시간 제한과 메모리 제한
-            Elements limitElements = doc.select("table#problem-info tbody tr");
-            if (limitElements.size() >= 2) { // 최소 두 줄이 있는지 확인
-                for (int i = 0; i < limitElements.size(); i++) {
-                    Elements ths = limitElements.get(i).select("th");
-                    Elements tds = limitElements.get(i).select("td");
-                    if (ths.size() > 0 && tds.size() > 0) {
-                        String label = ths.get(0).text();
-                        String value = tds.get(0).text();
-                        if (label.contains("시간 제한")) {
-                            response.setTimeLimit(value);
-                        } else if (label.contains("메모리 제한")) {
-                            response.setMemoryLimit(value);
-                        }
-                    }
+            Elements limitElement = doc.select("table#problem-info tbody tr");
+            if (!limitElement.isEmpty()) {
+                Elements tds = limitElement.select("td");
+                if (tds.size() >= 2) {
+                    response.setTimeLimit(tds.get(0).text());
+                    response.setMemoryLimit(tds.get(1).text());
                 }
             } else {
                 log.warn("시간 제한과 메모리 제한을 찾을 수 없습니다: {}", problemId);
