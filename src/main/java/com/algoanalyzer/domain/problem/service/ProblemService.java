@@ -110,7 +110,6 @@ public class ProblemService {
                 .output(response.getOutput())
                 .timeLimit(response.getTimeLimit())
                 .memoryLimit(response.getMemoryLimit())
-                .level(response.getLevel())
                 .tags(response.getTags().stream()
                         .map(tag -> {
                             if (tag.getDisplayNames() != null && !tag.getDisplayNames().isEmpty()) {

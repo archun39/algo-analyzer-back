@@ -8,21 +8,12 @@ import java.util.List;
 @Getter
 @Builder
 public class ProblemResponseDto {
-    @JsonProperty("problem_id")
-    private int problemId;
-
+    private Long problemId;
     private String title;
     private String description;
     private String input;
     private String output;
-
-    @JsonProperty("time_limit")
     private String timeLimit;
-
-    @JsonProperty("memory_limit")
     private String memoryLimit;
-
-    private int level;
-
     private List<String> tags;
 } 
