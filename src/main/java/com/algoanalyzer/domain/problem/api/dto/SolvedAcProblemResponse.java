@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class SolvedAcProblemResponse {
     @JsonProperty("problemId")
-    private int problemId;
+    private Long problemId;
     
     @JsonProperty("titleKo")
     private String titleKo;

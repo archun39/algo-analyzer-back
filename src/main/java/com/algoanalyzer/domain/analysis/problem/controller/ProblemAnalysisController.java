@@ -40,6 +40,10 @@ public class ProblemAnalysisController {
                 .tags(problemInfo.getTags())
                 .build();
         
-        return ResponseEntity.ok(problemAnalysisService.analyzeProblem(request));
+        // 분석 결과를 서비스에서 받아옴
+        ProblemAnalysisResponseDto analysisResult = problemAnalysisService.analyzeProblem(request);
+        
+        // 분석 결과를 프론트엔드로 반환
+        return ResponseEntity.ok(analysisResult);
     }
 } 

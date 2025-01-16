@@ -11,7 +11,7 @@ import java.util.List;
 public class ProblemAnalysisRequestDto {
     @NotNull(message = "문제 번호는 필수입니다.")
     @JsonProperty("problem_id")
-    private int problemId;
+    private Long problemId;
     
     @JsonProperty("description")
     private String description;

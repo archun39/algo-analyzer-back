@@ -23,7 +23,7 @@ public class ProblemService {
     private static final String BOJ_PROBLEM_URL = "https://www.acmicpc.net/problem/";
     private final RestTemplate restTemplate;
 
-    public ProblemResponseDto getProblem(int problemId) {
+    public ProblemResponseDto getProblem(Long problemId) {
         try {
             log.info("문제 정보 조회 시작: {}", problemId);
 
@@ -47,7 +47,7 @@ public class ProblemService {
         }
     }
 
-    private void fetchProblemDetails(int problemId, SolvedAcProblemResponse response) {
+    private void fetchProblemDetails(Long problemId, SolvedAcProblemResponse response) {
         try {
             String bojUrl = BOJ_PROBLEM_URL + problemId;
             Document doc = Jsoup.connect(bojUrl)
