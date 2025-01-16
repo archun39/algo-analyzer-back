@@ -27,7 +27,7 @@ public class ProblemService {
         try {
             log.info("문제 정보 조회 시작: {}", problemId);
 
-            // 1. solved.ac API에서 문제 제목과 태그 정보 가져오기
+            // Solved.ac API에서 문제 제목과 태그 정보 가져오기
             String url = SOLVED_AC_API_URL + problemId;
             SolvedAcProblemResponse response = restTemplate.getForObject(url, SolvedAcProblemResponse.class);
 
@@ -35,7 +35,7 @@ public class ProblemService {
                 throw new ProblemNotFoundException("문제를 찾을 수 없습니다: " + problemId);
             }
 
-            // 2. 백준 웹사이트에서 문제 상세 정보 크롤링
+            // 백준 웹사이트에서 문제 상세 정보 크롤링
             fetchProblemDetails(problemId, response);
 
             log.info("문제 정보 조회 완료: {}", problemId);

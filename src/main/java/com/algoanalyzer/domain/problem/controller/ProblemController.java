@@ -2,6 +2,7 @@ package com.algoanalyzer.domain.problem.controller;
 
 import com.algoanalyzer.domain.problem.dto.request.ProblemRequestDto;
 import com.algoanalyzer.domain.problem.dto.response.ProblemResponseDto;
+import com.algoanalyzer.domain.problem.dto.response.ProblemWithAnalysisResponseDto;
 import com.algoanalyzer.domain.problem.service.ProblemService;
 import com.algoanalyzer.domain.analysis.problem.service.ProblemAnalysisService;
 import com.algoanalyzer.domain.analysis.problem.dto.request.ProblemAnalysisRequestDto;
@@ -22,7 +23,7 @@ public class ProblemController {
     private final ProblemAnalysisService problemAnalysisService;
     
     @GetMapping("/{problemId}")
-    public ResponseEntity<ProblemResponseDto> getProblem(@PathVariable Long problemId) {
+    public ResponseEntity<ProblemWithAnalysisResponseDto> getProblem(@PathVariable Long problemId) {
         ProblemResponseDto response = problemService.getProblem(problemId);
         
         ProblemAnalysisRequestDto analysisRequest = ProblemAnalysisRequestDto.builder()
@@ -36,9 +37,13 @@ public class ProblemController {
                 .build();
         
         ProblemAnalysisResponseDto analysisResult = problemAnalysisService.analyzeProblem(analysisRequest);
-        
-        response.setAnalysisResult(analysisResult);
-        return ResponseEntity.ok(response);
+
+        ProblemWithAnalysisResponseDto combinedResponse = ProblemWithAnalysisResponseDto.builder()
+                .problemResponse(response)
+                .analysisResponse(analysisResult)
+                .build();
+
+        return ResponseEntity.ok(combinedResponse);
     }
 
     @PostMapping("/search")

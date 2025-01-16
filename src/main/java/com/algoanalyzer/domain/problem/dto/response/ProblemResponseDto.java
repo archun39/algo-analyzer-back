@@ -13,19 +13,12 @@ import java.util.List;
 @Builder
 @Setter
 public class ProblemResponseDto {
-    @JsonProperty("problem_id")
     private Long problemId;
-
     private String title;
     private String description;
     private String input;
     private String output;
-
-    @JsonProperty("time_limit")
     private String timeLimit;
-
-    @JsonProperty("memory_limit")
     private String memoryLimit;
-    
-    private List<String> analysisResults; // 분석 결과를 문자열 리스트로 변경
+    private List<String> tags;
 } 
