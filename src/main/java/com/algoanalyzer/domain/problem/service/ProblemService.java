@@ -1,5 +1,7 @@
 package com.algoanalyzer.domain.problem.service;
 
+import java.util.stream.Collectors;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -12,7 +14,6 @@ import com.algoanalyzer.domain.problem.exception.ProblemNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -85,13 +86,13 @@ public class ProblemService {
 
     private ProblemResponseDto convertToResponseDto(SolvedAcProblemResponse response) {
         return ProblemResponseDto.builder()
-                .problem_id(response.getProblemId())
+                .problemId(response.getProblemId())
                 .title(response.getTitleKo())
                 .description(response.getDescription())
                 .input(response.getInput())
                 .output(response.getOutput())
-                .time_limit(response.getTimeLimit())
-                .memory_limit(response.getMemoryLimit())
+                .timeLimit(response.getTimeLimit())
+                .memoryLimit(response.getMemoryLimit())
                 .tags(response.getTags().stream()
                         .map(tag -> tag.getDisplayNames().get(0).getName())
                         .collect(Collectors.toList()))

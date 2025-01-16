@@ -7,12 +7,12 @@ import java.util.List;
 @Getter
 @Builder
 public class ProblemResponseDto {
-    private Long problem_id;
+    private Long problemId;
     private String title;
     private String description;
     private String input;
     private String output;
-    private String time_limit;
-    private String memory_limit;
+    private String timeLimit;
+    private String memoryLimit;
     private List<String> tags;
 } 
