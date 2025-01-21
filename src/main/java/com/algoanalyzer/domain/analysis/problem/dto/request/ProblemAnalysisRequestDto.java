@@ -1,7 +1,7 @@
 package com.algoanalyzer.domain.analysis.problem.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import java.util.List;

@@ -12,7 +12,7 @@ import com.algoanalyzer.domain.analysis.problem.service.ProblemAnalysisService;
 import com.algoanalyzer.domain.problem.dto.response.ProblemResponseDto;
 import com.algoanalyzer.domain.problem.service.ProblemService;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
