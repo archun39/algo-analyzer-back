@@ -1,5 +1,5 @@
 
-package com.algoanalyzer.domain.problem.document;
+package com.algoanalyzer.domain.problem.model;
 
 import java.util.List;
 

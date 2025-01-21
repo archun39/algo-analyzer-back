@@ -11,6 +11,8 @@ import org.springframework.web.client.RestTemplate;
 import com.algoanalyzer.domain.problem.api.dto.SolvedAcProblemResponse;
 import com.algoanalyzer.domain.problem.dto.response.ProblemResponseDto;
 import com.algoanalyzer.domain.problem.exception.ProblemNotFoundException;
+import com.algoanalyzer.domain.problem.model.ProblemDocument;
+import com.algoanalyzer.domain.problem.repository.ProblemRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,8 @@ public class ProblemService {
     private static final String SOLVED_AC_API_URL = "https://solved.ac/api/v3/problem/show?problemId=";
     private static final String BOJ_PROBLEM_URL = "https://www.acmicpc.net/problem/";
     private final RestTemplate restTemplate;
-
+    private final ProblemRepository problemRepository;
+    
     public ProblemResponseDto getProblem(Long problemId) {
         try {
             log.info("문제 정보 조회 시작: {}", problemId);
@@ -39,6 +42,11 @@ public class ProblemService {
             fetchProblemDetails(problemId, response);
 
             log.info("문제 정보 조회 완료: {}", problemId);
+
+            // DB에 문제 정보 저장
+            saveProblemToDb(response);
+
+            // 문제 정보를 응답 DTO로 변환
             return convertToResponseDto(response);
 
         } catch (Exception e) {
@@ -112,5 +120,22 @@ public class ProblemService {
                         })
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    // DB에 문제 정보 저장
+    private void saveProblemToDb(SolvedAcProblemResponse response) {
+        ProblemDocument problemDocument = ProblemDocument.builder()
+                .problemId(response.getProblemId())
+                .title(response.getTitleKo())
+                .description(response.getDescription())
+                .input(response.getInput())
+                .output(response.getOutput())
+                .timeLimit(response.getTimeLimit())
+                .memoryLimit(response.getMemoryLimit())
+                .tags(response.getTags().stream()
+                        .map(tag -> tag.getDisplayNames().get(0).getName())
+                        .collect(Collectors.toList()))
+                .build();
+        problemRepository.save(problemDocument);
     }
 } 
