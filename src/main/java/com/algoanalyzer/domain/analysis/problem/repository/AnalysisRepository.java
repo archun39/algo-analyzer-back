@@ -2,8 +2,8 @@ package com.algoanalyzer.domain.analysis.problem.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.algoanalyzer.domain.analysis.problem.model.AnalysisLevel1Document;
+import com.algoanalyzer.domain.analysis.problem.dto.response.ProblemAnalysisResponseDto;
 
-public interface AnalysisRepository extends MongoRepository<AnalysisLevel1Document, Long> {
-    AnalysisLevel1Document findByProblemId(Long problemId);
+public interface AnalysisRepository extends MongoRepository<ProblemAnalysisResponseDto, Long> {
+    ProblemAnalysisResponseDto findByProblemId(Long problemId);
 }

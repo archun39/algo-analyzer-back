@@ -1,15 +1,22 @@
 package com.algoanalyzer.domain.analysis.problem.dto.response;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.AllArgsConstructor;
 
-@Builder
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProblemAnalysisResponseDto {
+@AllArgsConstructor
+@Builder
+@Document(collection = "analysis_level_1")
+public class ProblemAnalysisResponseDto{
+    @Id
     private Long problemId;
     private String timeComplexity; // 시간 복잡도
     private String timeComplexityReasoning; // 시간 복잡도를 분석한 근거 설명

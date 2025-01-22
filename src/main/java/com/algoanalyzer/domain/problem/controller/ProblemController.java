@@ -14,7 +14,6 @@ import com.algoanalyzer.domain.problem.dto.response.ProblemWithAnalysisResponseD
 import com.algoanalyzer.domain.problem.service.ProblemService;
 import com.algoanalyzer.domain.problem.model.ProblemDocument;
 import com.algoanalyzer.domain.problem.repository.ProblemRepository;
-import com.algoanalyzer.domain.analysis.problem.model.AnalysisLevel1Document;
 import com.algoanalyzer.domain.analysis.problem.repository.AnalysisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,19 +46,15 @@ public class ProblemController {
 
         // 문제 분석 요청
 
-        AnalysisLevel1Document analysisLevel1Document = (AnalysisLevel1Document) analysisRepository.findByProblemId(problemId);
-        ProblemAnalysisResponseDto analysisResult;
-        if(analysisLevel1Document == null) {
+        ProblemAnalysisResponseDto firstAnalysisDocument = (ProblemAnalysisResponseDto) analysisRepository.findByProblemId(problemId);
+        if(firstAnalysisDocument == null) {
             ProblemAnalysisRequestDto analysisRequest = buildAnalysisRequest(response);
-            analysisResult = problemAnalysisService.analyzeProblem(analysisRequest);
+            firstAnalysisDocument = problemAnalysisService.analyzeProblem(analysisRequest);
         }
-        else {
-            analysisResult = convertToResponseDto(analysisLevel1Document);
-        }
-
+        
         ProblemWithAnalysisResponseDto combinedResponse = ProblemWithAnalysisResponseDto.builder()
                 .problemResponse(response)
-                .analysisResponse(analysisResult)
+                .analysisResponse(firstAnalysisDocument)
                 .build();
 
         return ResponseEntity.ok(combinedResponse);
@@ -78,21 +73,7 @@ public class ProblemController {
                 .build();
     }
 
-    private ProblemAnalysisResponseDto convertToResponseDto(AnalysisLevel1Document analysisLevel1Document) {
-        return ProblemAnalysisResponseDto.builder()
-                .problemId(analysisLevel1Document.getProblemId())
-                .timeComplexity(analysisLevel1Document.getTimeComplexity())
-                .timeComplexityReasoning(analysisLevel1Document.getTimeComplexityReasoning())
-                .spaceComplexity(analysisLevel1Document.getSpaceComplexity())
-                .spaceComplexityReasoning(analysisLevel1Document.getSpaceComplexityReasoning())
-                .algorithmType(analysisLevel1Document.getAlgorithmType())
-                .algorithmTypeReasoning(analysisLevel1Document.getAlgorithmTypeReasoning())
-                .dataStructures(analysisLevel1Document.getDataStructures())
-                .dataStructuresReasoning(analysisLevel1Document.getDataStructuresReasoning())
-                .solutionImplementation(analysisLevel1Document.getSolutionImplementation())
-                .solutionImplementationReasoning(analysisLevel1Document.getSolutionImplementationReasoning())
-                .build();
-    }
+    
 
     // 문제 분석 요청 빌드
     private ProblemAnalysisRequestDto buildAnalysisRequest(ProblemResponseDto response) {
