@@ -25,7 +25,7 @@ public class ProblemService {
     private static final String BOJ_PROBLEM_URL = "https://www.acmicpc.net/problem/";
     private final RestTemplate restTemplate;
     private final ProblemRepository problemRepository;
-    
+
     public ProblemResponseDto getProblem(Long problemId) {
         try {
             log.info("문제 정보 조회 시작: {}", problemId);
@@ -45,6 +45,7 @@ public class ProblemService {
 
             // DB에 문제 정보 저장
             saveProblemToDb(response);
+            log.info("문제 정보 저장 완료: {}", problemId);
 
             // 문제 정보를 응답 DTO로 변환
             return convertToResponseDto(response);

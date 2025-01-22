@@ -37,9 +37,11 @@ public class ProblemController {
         if (problemDocument != null) {
             // DB에 문제 정보가 있는 경우
             response = convertToResponseDto(problemDocument);
+            log.info("DB에서 문제 정보 조회 완료: {}", problemId);
         } else {
             // DB에 문제 정보가 없는 경우, 문제를 크롤링
             response = problemService.getProblem(problemId);
+            log.info("DB에서 문제 정보 조회 실패: {}", problemId);
         }
 
         // 문제 분석 요청
