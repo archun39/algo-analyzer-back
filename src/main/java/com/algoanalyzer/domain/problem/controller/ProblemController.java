@@ -12,8 +12,6 @@ import com.algoanalyzer.domain.analysis.problem.service.ProblemAnalysisService;
 import com.algoanalyzer.domain.problem.dto.response.ProblemResponseDto;
 import com.algoanalyzer.domain.problem.dto.response.ProblemWithAnalysisResponseDto;
 import com.algoanalyzer.domain.problem.service.ProblemService;
-import com.algoanalyzer.domain.problem.model.ProblemDocument;
-import com.algoanalyzer.domain.problem.repository.ProblemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,23 +23,10 @@ public class ProblemController {
     
     private final ProblemService problemService;
     private final ProblemAnalysisService problemAnalysisService;
-    private final ProblemRepository problemRepository;
 
     @GetMapping("/{problemId}")
     public ResponseEntity<ProblemWithAnalysisResponseDto> getProblem(@PathVariable Long problemId) {
-        // DB에서 문제 조회
-        ProblemDocument problemDocument = (ProblemDocument) problemRepository.findByProblemId(problemId);
-        ProblemResponseDto response;
-
-        if (problemDocument != null) {
-            // DB에 문제 정보가 있는 경우
-            response = convertToResponseDto(problemDocument);
-            log.info("DB에서 문제 정보 조회 완료: {}", problemId);
-        } else {
-            // DB에 문제 정보가 없는 경우, 문제를 크롤링
-            response = problemService.getProblem(problemId);
-            log.info("DB에서 문제 정보 조회 실패: {}", problemId);
-        }
+        ProblemResponseDto response = problemService.getProblem(problemId);
 
         ProblemAnalysisRequestDto analysisRequest = buildAnalysisRequest(response);
         // 문제 분석 요청
@@ -53,19 +38,6 @@ public class ProblemController {
                 .build();
 
         return ResponseEntity.ok(combinedResponse);
-    }
-
-    private ProblemResponseDto convertToResponseDto(ProblemDocument problemDocument) {
-        return ProblemResponseDto.builder()
-                .problemId(problemDocument.getProblemId())
-                .title(problemDocument.getTitle())
-                .description(problemDocument.getDescription())
-                .input(problemDocument.getInput())
-                .output(problemDocument.getOutput())
-                .timeLimit(problemDocument.getTimeLimit())
-                .memoryLimit(problemDocument.getMemoryLimit())
-                .tags(problemDocument.getTags())
-                .build();
     }
 
     // 문제 분석 요청 빌드

@@ -30,6 +30,13 @@ public class ProblemService {
         try {
             log.info("문제 정보 조회 시작: {}", problemId);
 
+            // DB에서 문제 정보 조회
+            ProblemDocument problemDocument = problemRepository.findByProblemId(problemId);
+            if(problemDocument != null) {
+                log.info("DB에서 문제 정보 조회 완료: {}", problemId);
+                return convertToResponseDto(problemDocument);
+            }
+
             // Solved.ac API에서 문제 제목과 태그 정보 가져오기
             String url = SOLVED_AC_API_URL + problemId;
             SolvedAcProblemResponse response = restTemplate.getForObject(url, SolvedAcProblemResponse.class);
@@ -120,6 +127,19 @@ public class ProblemService {
                             }
                         })
                         .collect(Collectors.toList()))
+                .build();
+    }
+    
+    private ProblemResponseDto convertToResponseDto(ProblemDocument problemDocument) {
+        return ProblemResponseDto.builder()
+                .problemId(problemDocument.getProblemId())
+                .title(problemDocument.getTitle())
+                .description(problemDocument.getDescription())
+                .input(problemDocument.getInput())
+                .output(problemDocument.getOutput())
+                .timeLimit(problemDocument.getTimeLimit())
+                .memoryLimit(problemDocument.getMemoryLimit())
+                .tags(problemDocument.getTags())
                 .build();
     }
 
