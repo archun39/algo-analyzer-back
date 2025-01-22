@@ -28,6 +28,13 @@ public class ProblemAnalysisService {
     public ProblemAnalysisResponseDto analyzeProblem(ProblemAnalysisRequestDto request) {
         try {
             log.info("문제 분석 요청: problemId={}", request.getProblemId());
+
+            // DB에서 문제 정보 조회
+            ProblemAnalysisResponseDto analysisDocument = analysisRepository.findByProblemId(request.getProblemId());
+            if(analysisDocument != null) {
+                log.info("문제 분석 결과 DB 조회 완료: problemId={}", request.getProblemId());
+                return analysisDocument;
+            }
             
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -46,7 +53,9 @@ public class ProblemAnalysisService {
 
             // 분석 결과를 DB에 저장
             analysisRepository.save(analysisResult);
-            
+            log.info("분석 결과 저장 완료: {}", analysisResult.getProblemId());
+
+            // 분석 결과를 반환
             return analysisResult;
             
         } catch (Exception e) {

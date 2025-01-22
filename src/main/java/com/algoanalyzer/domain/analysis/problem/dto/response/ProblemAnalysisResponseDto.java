@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
-
+import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 @Document(collection = "analysis_level_1")
 public class ProblemAnalysisResponseDto{
     @Id
+    @NotNull
     private Long problemId;
     private String timeComplexity; // 시간 복잡도
     private String timeComplexityReasoning; // 시간 복잡도를 분석한 근거 설명

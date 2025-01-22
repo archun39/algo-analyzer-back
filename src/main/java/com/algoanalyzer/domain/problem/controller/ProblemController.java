@@ -14,7 +14,6 @@ import com.algoanalyzer.domain.problem.dto.response.ProblemWithAnalysisResponseD
 import com.algoanalyzer.domain.problem.service.ProblemService;
 import com.algoanalyzer.domain.problem.model.ProblemDocument;
 import com.algoanalyzer.domain.problem.repository.ProblemRepository;
-import com.algoanalyzer.domain.analysis.problem.repository.AnalysisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +26,7 @@ public class ProblemController {
     private final ProblemService problemService;
     private final ProblemAnalysisService problemAnalysisService;
     private final ProblemRepository problemRepository;
-    private final AnalysisRepository analysisRepository;
+
     @GetMapping("/{problemId}")
     public ResponseEntity<ProblemWithAnalysisResponseDto> getProblem(@PathVariable Long problemId) {
         // DB에서 문제 조회
@@ -44,17 +43,13 @@ public class ProblemController {
             log.info("DB에서 문제 정보 조회 실패: {}", problemId);
         }
 
+        ProblemAnalysisRequestDto analysisRequest = buildAnalysisRequest(response);
         // 문제 분석 요청
+        ProblemAnalysisResponseDto analysisResult = problemAnalysisService.analyzeProblem(analysisRequest);
 
-        ProblemAnalysisResponseDto firstAnalysisDocument = (ProblemAnalysisResponseDto) analysisRepository.findByProblemId(problemId);
-        if(firstAnalysisDocument == null) {
-            ProblemAnalysisRequestDto analysisRequest = buildAnalysisRequest(response);
-            firstAnalysisDocument = problemAnalysisService.analyzeProblem(analysisRequest);
-        }
-        
         ProblemWithAnalysisResponseDto combinedResponse = ProblemWithAnalysisResponseDto.builder()
                 .problemResponse(response)
-                .analysisResponse(firstAnalysisDocument)
+                .analysisResponse(analysisResult)
                 .build();
 
         return ResponseEntity.ok(combinedResponse);
@@ -72,8 +67,6 @@ public class ProblemController {
                 .tags(problemDocument.getTags())
                 .build();
     }
-
-    
 
     // 문제 분석 요청 빌드
     private ProblemAnalysisRequestDto buildAnalysisRequest(ProblemResponseDto response) {
