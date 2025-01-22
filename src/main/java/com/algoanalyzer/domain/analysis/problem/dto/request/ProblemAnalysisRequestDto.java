@@ -11,12 +11,9 @@ import java.util.List;
 public class ProblemAnalysisRequestDto {
     @NotNull(message = "문제 번호는 필수입니다.")
     private Long problemId;
-    
     private String description;
-
     private String input;
     private String output;
-
     private String timeLimit;
     private String memoryLimit;
     private List<String> tags;

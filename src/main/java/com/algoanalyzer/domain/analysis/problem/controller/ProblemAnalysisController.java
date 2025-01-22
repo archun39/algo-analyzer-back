@@ -21,23 +21,20 @@ import lombok.RequiredArgsConstructor;
 public class ProblemAnalysisController {
     
     private final ProblemAnalysisService problemAnalysisService;
-    private final ProblemService problemService;
     
     @PostMapping("/analyze")
     public ResponseEntity<ProblemAnalysisResponseDto> analyzeProblem(
             @RequestBody @Valid ProblemAnalysisRequestDto request) {
-        // 먼저 문제 정보를 가져옴
-        ProblemResponseDto problemInfo = problemService.getProblem(request.getProblemId());
         
         // 문제 정보를 분석 요청 DTO에 설정
         request = ProblemAnalysisRequestDto.builder()
-                .problemId(problemInfo.getProblemId())
-                .description(problemInfo.getDescription())
-                .input(problemInfo.getInput())
-                .output(problemInfo.getOutput())
-                .timeLimit(problemInfo.getTimeLimit())
-                .memoryLimit(problemInfo.getMemoryLimit())
-                .tags(problemInfo.getTags())
+                .problemId(request.getProblemId())
+                .description(request.getDescription())
+                .input(request.getInput())
+                .output(request.getOutput())
+                .timeLimit(request.getTimeLimit())
+                .memoryLimit(request.getMemoryLimit())
+                .tags(request.getTags())
                 .build();
         
         // 분석 결과를 서비스에서 받아옴

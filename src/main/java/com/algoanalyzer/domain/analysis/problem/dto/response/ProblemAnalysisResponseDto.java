@@ -1,13 +1,16 @@
 package com.algoanalyzer.domain.analysis.problem.dto.response;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 public class ProblemAnalysisResponseDto {
+    private Long problemId;
     private String timeComplexity; // 시간 복잡도
     private String timeComplexityReasoning; // 시간 복잡도를 분석한 근거 설명
     private String spaceComplexity; // 공간 복잡도

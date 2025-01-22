@@ -9,6 +9,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.algoanalyzer.domain.analysis.problem.dto.request.ProblemAnalysisRequestDto;
 import com.algoanalyzer.domain.analysis.problem.dto.response.ProblemAnalysisResponseDto;
+import com.algoanalyzer.domain.analysis.problem.model.AnalysisLevel1Document;
+import com.algoanalyzer.domain.analysis.problem.repository.AnalysisRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,8 @@ public class ProblemAnalysisService {
     private String pythonApiBaseUrl;
     
     private final RestTemplate restTemplate;
-    
+    private final AnalysisRepository analysisRepository;
+
     public ProblemAnalysisResponseDto analyzeProblem(ProblemAnalysisRequestDto request) {
         try {
             log.info("문제 분석 요청: problemId={}", request.getProblemId());
@@ -41,6 +44,22 @@ public class ProblemAnalysisService {
             ProblemAnalysisResponseDto analysisResult = restTemplate.postForObject(url, entity, ProblemAnalysisResponseDto.class);
             
             log.info("분석 결과 수신: {}", analysisResult);
+
+            AnalysisLevel1Document analysisLevel1Document = AnalysisLevel1Document.builder()
+                    .problemId(request.getProblemId())
+                    .timeComplexity(analysisResult.getTimeComplexity() != null ? analysisResult.getTimeComplexity() : "기본값")
+                    .timeComplexityReasoning(analysisResult.getTimeComplexityReasoning() != null ? analysisResult.getTimeComplexityReasoning() : "기본값")
+                    .spaceComplexity(analysisResult.getSpaceComplexity() != null ? analysisResult.getSpaceComplexity() : "기본값")
+                    .spaceComplexityReasoning(analysisResult.getSpaceComplexityReasoning() != null ? analysisResult.getSpaceComplexityReasoning() : "기본값")
+                    .algorithmType(analysisResult.getAlgorithmType() != null ? analysisResult.getAlgorithmType() : "기본값")
+                    .algorithmTypeReasoning(analysisResult.getAlgorithmTypeReasoning() != null ? analysisResult.getAlgorithmTypeReasoning() : "기본값")
+                    .dataStructures(analysisResult.getDataStructures() != null ? analysisResult.getDataStructures() : "기본값")
+                    .dataStructuresReasoning(analysisResult.getDataStructuresReasoning() != null ? analysisResult.getDataStructuresReasoning() : "기본값")
+                    .solutionImplementation(analysisResult.getSolutionImplementation() != null ? analysisResult.getSolutionImplementation() : "기본값")
+                    .solutionImplementationReasoning(analysisResult.getSolutionImplementationReasoning() != null ? analysisResult.getSolutionImplementationReasoning() : "기본값")
+                    .build();
+            
+            analysisRepository.save(analysisLevel1Document);
             
             return analysisResult;
             
@@ -50,4 +69,5 @@ public class ProblemAnalysisService {
         }
     }
 }
+
 
