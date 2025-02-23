@@ -35,6 +35,9 @@ public class ProblemAnalysisService {
                 log.info("문제 분석 결과 DB 조회 완료: problemId={}", request.getProblemId());
                 return analysisDocument;
             }
+            else {
+                log.info("문제 분석 결과 DB 조회 실패: problemId={}", request.getProblemId());
+            }
             
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -44,7 +47,6 @@ public class ProblemAnalysisService {
             String url = pythonApiBaseUrl + "/api/analyze/problem";
             
             log.info("FastAPI 요청 URL: {}", url);
-            log.debug("요청 데이터: {}", request);
             
             // FastAPI로부터 분석 결과를 받아옴
             ProblemAnalysisResponseDto analysisResult = restTemplate.postForObject(url, entity, ProblemAnalysisResponseDto.class);

@@ -1,5 +1,7 @@
 package com.algoanalyzer.domain.analysis.problem.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,18 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algoanalyzer.domain.analysis.problem.dto.request.ProblemAnalysisRequestDto;
 import com.algoanalyzer.domain.analysis.problem.dto.response.ProblemAnalysisResponseDto;
 import com.algoanalyzer.domain.analysis.problem.service.ProblemAnalysisService;
-import com.algoanalyzer.domain.analysis.problem.repository.AnalysisRepository;
-import com.algoanalyzer.domain.problem.dto.response.ProblemResponseDto;
-import com.algoanalyzer.domain.problem.service.ProblemService;
 
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/analysis/problem")
 @RequiredArgsConstructor
 public class ProblemAnalysisController {
-    private final AnalysisRepository analysisRepository;
     private final ProblemAnalysisService problemAnalysisService;
     
     @PostMapping("/analyze")
