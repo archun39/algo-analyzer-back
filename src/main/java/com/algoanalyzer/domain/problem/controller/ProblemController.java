@@ -12,6 +12,7 @@ import com.algoanalyzer.domain.analysis.problem.service.ProblemAnalysisService;
 import com.algoanalyzer.domain.problem.dto.response.ProblemResponseDto;
 import com.algoanalyzer.domain.problem.dto.response.ProblemWithAnalysisResponseDto;
 import com.algoanalyzer.domain.problem.service.ProblemService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +27,8 @@ public class ProblemController {
 
     @GetMapping("/{problemId}")
     public ResponseEntity<ProblemWithAnalysisResponseDto> getProblem(@PathVariable Long problemId) {
+        
+        // 문제 조회
         ProblemResponseDto response = problemService.getProblem(problemId);
 
         ProblemAnalysisRequestDto analysisRequest = buildAnalysisRequest(response);
