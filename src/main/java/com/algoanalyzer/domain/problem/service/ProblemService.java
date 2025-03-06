@@ -77,7 +77,10 @@ public class ProblemService {
             // 문제 설명
             Elements descriptionElement = doc.select("#problem_description");
             if (!descriptionElement.isEmpty()) {
-                response.setDescription(descriptionElement.text());
+                // 텍스트뿐만 아니라 이미지 태그 등 HTML 콘텐츠를 모두 포함하여 가져옵니다.
+                String descriptionHtml = descriptionElement.html();
+                response.setDescription(descriptionHtml);
+                System.out.println(descriptionHtml);
             }
 
             // 입력 설명

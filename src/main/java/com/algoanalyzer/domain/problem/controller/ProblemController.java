@@ -31,14 +31,20 @@ public class ProblemController {
         // 문제 조회
         ProblemResponseDto response = problemService.getProblem(problemId);
 
+        log.info("문제 조회 완료: {}", response);
+
         ProblemAnalysisRequestDto analysisRequest = buildAnalysisRequest(response);
         // 문제 분석 요청
         ProblemAnalysisResponseDto analysisResult = problemAnalysisService.analyzeProblem(analysisRequest);
+
+        log.info("문제 분석 완료: {}", analysisResult);
 
         ProblemWithAnalysisResponseDto combinedResponse = ProblemWithAnalysisResponseDto.builder()
                 .problemResponse(response)
                 .analysisResponse(analysisResult)
                 .build();
+
+        log.info("문제 조회 및 분석 완료: {}", combinedResponse);
 
         return ResponseEntity.ok(combinedResponse);
     }

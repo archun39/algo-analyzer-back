@@ -36,7 +36,7 @@ public class ProblemAnalysisService {
                 return analysisDocument;
             }
             else {
-                log.info("문제 분석 결과 DB 조회 실패: problemId={}", request.getProblemId());
+                log.info("문제 분석 요청: problemId={}", request.getProblemId());
             }
             
             HttpHeaders headers = new HttpHeaders();

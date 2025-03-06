@@ -1,9 +1,10 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/algoanalyzer  # 로컬 MongoDB URI
+      uri: "mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@cluster0.aelwn.mongodb.net/algoanalyzer?retryWrites=true&w=majority&appName=Cluster0"
+      database: algoanalyzer
       # 또는 MongoDB Atlas URI 사용 시
-      # uri: mongodb+srv://<username>:<password>@cluster0.mongodb.net/algoanalyzer?retryWrites=true&w=majority
+      # uri: "mongodb+srv://<username>:<password>@cluster0.mongodb.net/algoanalyzer?retryWrites=true&w=majority"
 
 server:
   port: 8080 
@@ -16,3 +17,4 @@ logging:
   level:
     root: INFO
     com.algoanalyzer: DEBUG
+    org.mongodb.driver: ERROR
