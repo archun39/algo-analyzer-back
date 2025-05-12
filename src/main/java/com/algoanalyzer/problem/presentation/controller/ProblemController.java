@@ -18,8 +18,12 @@ public class ProblemController {
 
     @GetMapping("/{problemId}")
     public ResponseEntity<ProblemResponseDto> getProblem(@PathVariable Long problemId) {
+        // 문제 조회 시작 시간 측정
+        long startTime = System.currentTimeMillis();
         Problem problem = getProblemUseCase.getProblem(problemId);
+        long fetchTimeMs = System.currentTimeMillis() - startTime;
 
+        System.out.println("문제 조회 시간: " + fetchTimeMs + "ms");
         ProblemResponseDto responseDto = ProblemResponseDto.builder()
             .problemId(problem.getProblemId())
             .title(problem.getTitle())
