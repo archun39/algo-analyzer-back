@@ -24,8 +24,11 @@ public class ProblemController {
             .problemId(problem.getProblemId())
             .title(problem.getTitle())
             .description(problem.getDescription())
+            .input(problem.getInput())
+            .output(problem.getOutput())
             .timeLimit(problem.getTimeLimit())
             .memoryLimit(problem.getMemoryLimit())
+            .tags(problem.getTags())
             .build();
         
         return ResponseEntity.ok(responseDto);

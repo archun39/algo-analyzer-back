@@ -16,6 +16,8 @@ public class ProblemDocument {
 
     private String title;
     private String description;
+    private String input;
+    private String output;
     private String timeLimit;
     private String memoryLimit;
     private List<String> tags;
