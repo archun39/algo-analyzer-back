@@ -25,6 +25,7 @@ public class ProblemAnalysisService {
     private final RestTemplate restTemplate;
     private final AnalysisRepository analysisRepository;
 
+    // 문제 분석 요청
     public ProblemAnalysisResponseDto analyzeProblem(ProblemAnalysisRequestDto request) {
         try {
             log.info("문제 분석 요청: problemId={}", request.getProblemId());
@@ -41,7 +42,6 @@ public class ProblemAnalysisService {
             
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            
             HttpEntity<ProblemAnalysisRequestDto> entity = new HttpEntity<>(request, headers);
             
             String url = pythonApiBaseUrl + "/api/analyze/problem";
