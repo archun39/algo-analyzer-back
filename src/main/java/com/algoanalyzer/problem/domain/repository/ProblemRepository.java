@@ -1,9 +1,10 @@
-package com.algoanalyzer.domain.problem.repository;
+// src/main/java/com/algoanalyzer/problem/domain/repository/ProblemRepository.java
+package com.algoanalyzer.problem.domain.repository;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import com.algoanalyzer.problem.domain.model.Problem;
+import java.util.Optional;
 
-import com.algoanalyzer.domain.problem.model.ProblemDocument;
-
-public interface ProblemRepository extends MongoRepository<ProblemDocument, Long> {
-    ProblemDocument findByProblemId(Long problemId);
-} 
+public interface ProblemRepository {
+    Optional<Problem> findByProblemId(Long problemId);
+    void save(Problem problem);
+}
