@@ -1,4 +1,4 @@
-package com.algoanalyzer.domain.analysis.problem.dto.request;
+package com.algoanalyzer.analysis.presentation.dto.request;
 
 import javax.validation.constraints.NotNull;
 import lombok.Builder;

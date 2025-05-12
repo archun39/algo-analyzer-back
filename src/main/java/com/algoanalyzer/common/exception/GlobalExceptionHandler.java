@@ -1,10 +1,11 @@
 package com.algoanalyzer.common.exception;
 
-import com.algoanalyzer.domain.problem.exception.ProblemNotFoundException;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.algoanalyzer.problem.domain.exception.ProblemNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
