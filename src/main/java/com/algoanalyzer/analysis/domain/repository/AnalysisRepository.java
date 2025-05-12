@@ -1,4 +1,4 @@
-package com.algoanalyzer.domain.analysis.problem.repository;
+package com.algoanalyzer.analysis.domain.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

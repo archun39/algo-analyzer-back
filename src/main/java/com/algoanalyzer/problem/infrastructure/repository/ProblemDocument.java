@@ -10,7 +10,6 @@ import lombok.Builder;
 @Builder
 @Data
 @Document(collection = "problems")  // MongoDB 컬렉션 이름
-
 // 문제 정보를 저장하는 모델
 public class ProblemDocument {
     @Id

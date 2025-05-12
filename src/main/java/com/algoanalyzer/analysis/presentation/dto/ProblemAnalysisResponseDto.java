@@ -1,4 +1,4 @@
-package com.algoanalyzer.domain.analysis.problem.dto.response;
+package com.algoanalyzer.problem.presentation.dto.response;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

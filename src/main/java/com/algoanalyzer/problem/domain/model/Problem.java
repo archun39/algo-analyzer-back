@@ -11,6 +11,8 @@ public class Problem {
     private final Long problemId;
     private final String title;
     private final String description;
+    private final String input;
+    private final String output;
     private final List<String> tags;
     private final String timeLimit;
     private final String memoryLimit;

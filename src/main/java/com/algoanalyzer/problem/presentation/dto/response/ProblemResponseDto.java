@@ -1,7 +1,4 @@
-package com.algoanalyzer.domain.problem.dto.response;
-
-import com.algoanalyzer.domain.analysis.problem.dto.response.ProblemAnalysisResponseDto;
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.algoanalyzer.problem.presentation.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
