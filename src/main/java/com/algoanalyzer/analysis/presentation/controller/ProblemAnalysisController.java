@@ -16,12 +16,12 @@ import com.algoanalyzer.analysis.presentation.dto.request.ProblemAnalysisRequest
 import com.algoanalyzer.analysis.presentation.dto.response.ProblemAnalysisResponseDto;
 
 @RestController
-@RequestMapping("/api/analysis/problem")
+@RequestMapping("/api/problems")
 @RequiredArgsConstructor
 public class ProblemAnalysisController {
     private final AnalyzeProblemUseCase analyzeProblemUseCase;
     
-    @PostMapping("/analyze")
+    @PostMapping("/problemId}/analysis")
     public ResponseEntity<ProblemAnalysisResponseDto> analyzeProblem(
         @RequestBody @Valid ProblemAnalysisRequestDto request) {
         // 유스케이스 실행
