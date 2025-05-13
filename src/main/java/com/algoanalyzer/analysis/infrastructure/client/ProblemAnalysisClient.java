@@ -27,19 +27,35 @@ public class ProblemAnalysisClient implements AnalyzeProblemClient {
 
     @Override
     public ProblemAnalysis callPythonApi(ProblemAnalysisRequestDto request) {
-        String url = baseUrl + "/api/analyze/problem";
+        String url = baseUrl + "/api/internal/problems/" + request.getProblemId() + "/analysis";
+
+        // HTTP 요청용 헤더 및 엔티티 생성
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<ProblemAnalysisRequestDto> entity = new HttpEntity<>(request, headers);
 
-        ResponseEntity<ProblemAnalysisResponseDto> resp = restTemplate
-            .exchange(url, HttpMethod.POST, entity, ProblemAnalysisResponseDto.class);
-        
-        if (!resp.getStatusCode().is2xxSuccessful() || resp.getBody() == null) {
-            throw new ProblemAnalysisException("문제 분석 실패");
+        try {
+            ResponseEntity<ProblemAnalysisResponseDto> resp = restTemplate
+                .exchange(url, HttpMethod.POST, entity, ProblemAnalysisResponseDto.class);
+    
+            ProblemAnalysisResponseDto responseDto = resp.getBody();
+            if (!resp.getStatusCode().is2xxSuccessful() || responseDto == null) {
+                throw new ProblemAnalysisException("문제 분석 실패: HTTP " + resp.getStatusCodeValue());
+            }
+    
+            ProblemAnalysis analysis = buildResponseDto(responseDto);
+   
+            return analysis;
+    
+        } catch (Exception e) {
+            // 예외 스택트레이스 로깅
+            System.err.println("[AI Client] 호출 중 예외 발생:");
+            e.printStackTrace();
+            throw e;
         }
+    }
 
-        ProblemAnalysisResponseDto response = resp.getBody();
+    private ProblemAnalysis buildResponseDto(ProblemAnalysisResponseDto response) {
         return ProblemAnalysis.builder()
             .problemId(response.getProblemId())
             .timeComplexity(response.getTimeComplexity())

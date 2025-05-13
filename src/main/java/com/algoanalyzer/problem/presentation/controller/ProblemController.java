@@ -24,7 +24,13 @@ public class ProblemController {
         long fetchTimeMs = System.currentTimeMillis() - startTime;
 
         System.out.println("문제 조회 시간: " + fetchTimeMs + "ms");
-        ProblemResponseDto responseDto = ProblemResponseDto.builder()
+        ProblemResponseDto responseDto = buildResponseDto(problem);
+        
+        return ResponseEntity.ok(responseDto);
+    }
+
+    private ProblemResponseDto buildResponseDto(Problem problem) {
+        return ProblemResponseDto.builder()
             .problemId(problem.getProblemId())
             .title(problem.getTitle())
             .description(problem.getDescription())
@@ -34,7 +40,5 @@ public class ProblemController {
             .memoryLimit(problem.getMemoryLimit())
             .tags(problem.getTags())
             .build();
-        
-        return ResponseEntity.ok(responseDto);
     }
 } 
