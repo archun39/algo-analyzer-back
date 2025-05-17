@@ -14,21 +14,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpMethod;
 import com.algoanalyzer.analysis.application.port.out.AnalyzeProblemClient;
 import com.algoanalyzer.analysis.domain.exception.ProblemAnalysisException;
-
+import com.algoanalyzer.analysis.application.mapper.ProblemAnalysisMapper;
 
 @Component
 @RequiredArgsConstructor
 public class ProblemAnalysisClient implements AnalyzeProblemClient {
-    //todo: 문제 분석 클라이언트 구현
+
     private final RestTemplate restTemplate;
+    private final ProblemAnalysisMapper problemAnalysisMapper;
 
     @Value("${python.api.base-url}")
     private String baseUrl;
 
     @Override
     public ProblemAnalysis callPythonApi(ProblemAnalysisRequestDto request) {
+        //null값이 될 수 있음
         String url = baseUrl + "/api/internal/problems/" + request.getProblemId() + "/analysis";
-
+         
         // HTTP 요청용 헤더 및 엔티티 생성
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -43,7 +45,7 @@ public class ProblemAnalysisClient implements AnalyzeProblemClient {
                 throw new ProblemAnalysisException("문제 분석 실패: HTTP " + resp.getStatusCodeValue());
             }
     
-            ProblemAnalysis analysis = buildResponseDto(responseDto);
+            ProblemAnalysis analysis = problemAnalysisMapper.toDomain(responseDto);
    
             return analysis;
     
@@ -53,21 +55,5 @@ public class ProblemAnalysisClient implements AnalyzeProblemClient {
             e.printStackTrace();
             throw e;
         }
-    }
-
-    private ProblemAnalysis buildResponseDto(ProblemAnalysisResponseDto response) {
-        return ProblemAnalysis.builder()
-            .problemId(response.getProblemId())
-            .timeComplexity(response.getTimeComplexity())
-            .timeComplexityReasoning(response.getTimeComplexityReasoning())
-            .spaceComplexity(response.getSpaceComplexity())
-            .spaceComplexityReasoning(response.getSpaceComplexityReasoning())
-            .algorithmType(response.getAlgorithmType())
-            .algorithmTypeReasoning(response.getAlgorithmTypeReasoning())
-            .dataStructures(response.getDataStructures())
-            .dataStructuresReasoning(response.getDataStructuresReasoning())
-            .solutionImplementation(response.getSolutionImplementation())
-            .solutionImplementationReasoning(response.getSolutionImplementationReasoning())
-            .build();
     }
 }

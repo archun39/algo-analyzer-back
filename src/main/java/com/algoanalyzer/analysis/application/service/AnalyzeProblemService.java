@@ -9,6 +9,7 @@ import com.algoanalyzer.analysis.domain.repository.ProblemAnalysisRepository;
 import com.algoanalyzer.analysis.presentation.dto.request.ProblemAnalysisRequestDto;
 import com.algoanalyzer.problem.domain.model.Problem;
 import com.algoanalyzer.problem.application.port.in.GetProblemUseCase;
+import com.algoanalyzer.problem.application.mapper.ProblemMapper;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,7 +18,7 @@ public class AnalyzeProblemService implements AnalyzeProblemUseCase{
     private final ProblemAnalysisRepository problemAnalysisRepository;
     private final AnalyzeProblemClient client;
     private final GetProblemUseCase getProblemUseCase;
-
+    private final ProblemMapper problemMapper;
     @Override
     public ProblemAnalysis analyzeProblem(Long problemId) {
         //1) 문제 분석 결과가 이미 존재하는지 확인
@@ -31,22 +32,10 @@ public class AnalyzeProblemService implements AnalyzeProblemUseCase{
                 Problem problem = getProblemUseCase.getProblem(problemId);
                 System.out.println("문제 정보 조회 완료");
 
-                ProblemAnalysisRequestDto dto = buildRequestDto(problem);
+                ProblemAnalysisRequestDto dto = problemMapper.toRequestDto(problem);
                 ProblemAnalysis pa = client.callPythonApi(dto);
                 problemAnalysisRepository.save(pa);
                 return pa;
             });
-    }
-
-    private ProblemAnalysisRequestDto buildRequestDto(Problem problem) {
-        return ProblemAnalysisRequestDto.builder()
-            .problemId(problem.getProblemId())
-            .description(problem.getDescription())
-            .input(problem.getInput())
-            .output(problem.getOutput())
-            .timeLimit(problem.getTimeLimit())
-            .memoryLimit(problem.getMemoryLimit())
-            .tags(problem.getTags())
-            .build();
     }
 }

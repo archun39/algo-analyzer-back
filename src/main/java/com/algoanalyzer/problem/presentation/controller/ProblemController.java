@@ -8,13 +8,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import com.algoanalyzer.problem.domain.model.Problem;
 import com.algoanalyzer.problem.presentation.dto.response.ProblemResponseDto;
+import com.algoanalyzer.problem.application.mapper.ProblemMapper;
 import lombok.RequiredArgsConstructor;
+
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/problems")
 public class ProblemController {
     private final GetProblemUseCase getProblemUseCase;
+    private final ProblemMapper problemMapper;
 
     @GetMapping("/{problemId}")
     public ResponseEntity<ProblemResponseDto> getProblem(@PathVariable Long problemId) {
@@ -24,21 +27,8 @@ public class ProblemController {
         long fetchTimeMs = System.currentTimeMillis() - startTime;
 
         System.out.println("문제 조회 시간: " + fetchTimeMs + "ms");
-        ProblemResponseDto responseDto = buildResponseDto(problem);
+        ProblemResponseDto responseDto = problemMapper.toResponseDto(problem);
         
         return ResponseEntity.ok(responseDto);
-    }
-
-    private ProblemResponseDto buildResponseDto(Problem problem) {
-        return ProblemResponseDto.builder()
-            .problemId(problem.getProblemId())
-            .title(problem.getTitle())
-            .description(problem.getDescription())
-            .input(problem.getInput())
-            .output(problem.getOutput())
-            .timeLimit(problem.getTimeLimit())
-            .memoryLimit(problem.getMemoryLimit())
-            .tags(problem.getTags())
-            .build();
     }
 } 

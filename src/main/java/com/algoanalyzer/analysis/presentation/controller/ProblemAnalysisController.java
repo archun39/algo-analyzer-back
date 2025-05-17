@@ -10,38 +10,26 @@ import lombok.RequiredArgsConstructor;
 import com.algoanalyzer.analysis.application.port.in.AnalyzeProblemUseCase;
 import com.algoanalyzer.analysis.domain.model.ProblemAnalysis;
 import com.algoanalyzer.analysis.presentation.dto.response.ProblemAnalysisResponseDto;
+import com.algoanalyzer.analysis.application.mapper.ProblemAnalysisMapper;
 
 @RestController
 @RequestMapping("/api/problems")
 @RequiredArgsConstructor
 public class ProblemAnalysisController {
     private final AnalyzeProblemUseCase analyzeProblemUseCase;
-    
+    private final ProblemAnalysisMapper problemAnalysisMapper;
+
     @PostMapping("/{problemId}/analysis")
     public ResponseEntity<ProblemAnalysisResponseDto> analyzeProblem(
         @PathVariable Long problemId) {
-        // 유스케이스 실행
-        ProblemAnalysis analysis = analyzeProblemUseCase.analyzeProblem(problemId);
         
-        // 도메인 모델 → 응답 DTO 매
-        ProblemAnalysisResponseDto responseDto = buildResponseDto(analysis);
+        long startTime = System.currentTimeMillis();
+        ProblemAnalysis analysis = analyzeProblemUseCase.analyzeProblem(problemId);
+        long fetchTimeMs = System.currentTimeMillis() - startTime;
+
+        System.out.println("문제 분석 시간: " + fetchTimeMs + "ms");
+        ProblemAnalysisResponseDto responseDto = problemAnalysisMapper.toResponseDto(analysis);
         
         return ResponseEntity.ok(responseDto);
-    }
-
-    private ProblemAnalysisResponseDto buildResponseDto(ProblemAnalysis analysis) {
-        return ProblemAnalysisResponseDto.builder()
-            .problemId(analysis.getProblemId())
-            .timeComplexity(analysis.getTimeComplexity())
-            .timeComplexityReasoning(analysis.getTimeComplexityReasoning())
-            .spaceComplexity(analysis.getSpaceComplexity())
-            .spaceComplexityReasoning(analysis.getSpaceComplexityReasoning())
-            .algorithmType(analysis.getAlgorithmType())
-            .algorithmTypeReasoning(analysis.getAlgorithmTypeReasoning())
-            .dataStructures(analysis.getDataStructures())
-            .dataStructuresReasoning(analysis.getDataStructuresReasoning())
-            .solutionImplementation(analysis.getSolutionImplementation())
-            .solutionImplementationReasoning(analysis.getSolutionImplementationReasoning())
-            .build();
     }
 } 
