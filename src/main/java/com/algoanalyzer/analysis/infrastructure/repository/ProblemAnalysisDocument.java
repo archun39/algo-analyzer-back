@@ -20,7 +20,7 @@ public class ProblemAnalysisDocument {
     private String algorithmType;
     private String algorithmTypeReasoning;
     private String dataStructures;
-    private final String dataStructuresReasoning;
-    private final String solutionImplementation;
-    private final String solutionImplementationReasoning;
+    private String dataStructuresReasoning;
+    private String solutionImplementation;
+    private String solutionImplementationReasoning;
 }

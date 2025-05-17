@@ -4,16 +4,22 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Problem {
-    private final Long problemId;
-    private final String title;
-    private final String description;
-    private final String input;
-    private final String output;
-    private final List<String> tags;
-    private final String timeLimit;
-    private final String memoryLimit;
+    private Long problemId;
+    private String title;
+    private String description;
+    private String input;
+    private String output;
+    private List<String> tags;
+    private String timeLimit;
+    private String memoryLimit;
 }

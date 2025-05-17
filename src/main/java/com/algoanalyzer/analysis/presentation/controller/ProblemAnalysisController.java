@@ -26,7 +26,8 @@ public class ProblemAnalysisController {
         long startTime = System.currentTimeMillis();
         ProblemAnalysis analysis = analyzeProblemUseCase.analyzeProblem(problemId);
         long fetchTimeMs = System.currentTimeMillis() - startTime;
-
+        
+        System.out.println(analysis);
         System.out.println("문제 분석 시간: " + fetchTimeMs + "ms");
         ProblemAnalysisResponseDto responseDto = problemAnalysisMapper.toResponseDto(analysis);
         

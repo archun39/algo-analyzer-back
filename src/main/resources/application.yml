@@ -5,6 +5,11 @@ spring:
     mongodb:
       uri: "mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@cluster0.aelwn.mongodb.net/algoanalyzer?retryWrites=true&w=majority&appName=Cluster0"
       database: algoanalyzer
+  
+  redis:
+    host: localhost
+    port: 6379
+  
  
 server:
   port: 8080 

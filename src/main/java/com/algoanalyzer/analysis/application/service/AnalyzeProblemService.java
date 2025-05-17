@@ -1,6 +1,11 @@
 package com.algoanalyzer.analysis.application.service;
 
+import java.time.Duration;
+
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 
 import com.algoanalyzer.analysis.application.port.in.AnalyzeProblemUseCase;
 import com.algoanalyzer.analysis.application.port.out.AnalyzeProblemClient;
@@ -10,32 +15,57 @@ import com.algoanalyzer.analysis.presentation.dto.request.ProblemAnalysisRequest
 import com.algoanalyzer.problem.domain.model.Problem;
 import com.algoanalyzer.problem.application.port.in.GetProblemUseCase;
 import com.algoanalyzer.problem.application.mapper.ProblemMapper;
+
 import lombok.RequiredArgsConstructor;
+
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "analysis")
 public class AnalyzeProblemService implements AnalyzeProblemUseCase{
     private final ProblemAnalysisRepository problemAnalysisRepository;
     private final AnalyzeProblemClient client;
     private final GetProblemUseCase getProblemUseCase;
     private final ProblemMapper problemMapper;
-    @Override
-    public ProblemAnalysis analyzeProblem(Long problemId) {
-        //1) 문제 분석 결과가 이미 존재하는지 확인
-        return problemAnalysisRepository.findByProblemId(problemId)
-            .map(existing -> {
-                System.out.println("문제 분석 결과가 이미 존재합니다.");
-                return existing;
-            })
-            .orElseGet(() -> {
-                //2) 문제 분석 결과가 없으면 문제 분석 결과를 가져옴
-                Problem problem = getProblemUseCase.getProblem(problemId);
-                System.out.println("문제 정보 조회 완료");
+    private final StringRedisTemplate redisTemplate;
 
-                ProblemAnalysisRequestDto dto = problemMapper.toRequestDto(problem);
-                ProblemAnalysis pa = client.callPythonApi(dto);
-                problemAnalysisRepository.save(pa);
-                return pa;
-            });
+    @Override
+    @Cacheable(key = "#problemId", unless = "#result.problemId == null")
+    public ProblemAnalysis analyzeProblem(Long problemId) {
+        return problemAnalysisRepository.findByProblemId(problemId)
+            .orElseGet(() -> doAnalyzeWithLock(problemId));
+    }
+
+    private ProblemAnalysis doAnalyzeWithLock(Long problemId) {
+        String redisKey = "analyzing:problem:" + problemId;
+
+        Boolean isLockAcquired = Boolean.TRUE.equals(
+            redisTemplate.opsForValue().setIfAbsent(redisKey, "IN_PROGRESS", Duration.ofMinutes(3))
+        );
+
+        if (!isLockAcquired) {
+            // 다른 요청이 이미 분석 중
+            while (Boolean.TRUE.equals(redisTemplate.hasKey(redisKey))) {
+                try {
+                    Thread.sleep(500); // 100ms 대기
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            return problemAnalysisRepository.findByProblemId(problemId)
+                .orElseThrow(() -> new RuntimeException("문제 분석 결과가 없거나 TTL이 만료됨."));
+        }
+
+        try {
+            System.out.println("문제 분석 시작");
+            Problem problem = getProblemUseCase.getProblem(problemId);
+            ProblemAnalysisRequestDto dto = problemMapper.toRequestDto(problem);
+            ProblemAnalysis pa = client.callPythonApi(dto);
+            problemAnalysisRepository.save(pa);
+            return pa;
+        } finally {
+            redisTemplate.delete(redisKey);
+        }
+        
     }
 }

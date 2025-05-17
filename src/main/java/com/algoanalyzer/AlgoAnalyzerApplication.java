@@ -8,4 +8,4 @@ public class AlgoAnalyzerApplication {
     public static void main(String[] args) {
         SpringApplication.run(AlgoAnalyzerApplication.class, args);
     }
-} 
+}
