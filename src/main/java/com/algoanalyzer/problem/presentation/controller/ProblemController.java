@@ -10,7 +10,8 @@ import com.algoanalyzer.problem.domain.model.Problem;
 import com.algoanalyzer.problem.presentation.dto.response.ProblemResponseDto;
 import com.algoanalyzer.problem.application.mapper.ProblemMapper;
 import lombok.RequiredArgsConstructor;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,15 +19,16 @@ import lombok.RequiredArgsConstructor;
 public class ProblemController {
     private final GetProblemUseCase getProblemUseCase;
     private final ProblemMapper problemMapper;
+    private static final Logger logger = LoggerFactory.getLogger(ProblemController.class);
 
     @GetMapping("/{problemId}")
     public ResponseEntity<ProblemResponseDto> getProblem(@PathVariable Long problemId) {
-        // 문제 조회 시작 시간 측정
+        logger.info("문제 조회 시작: problemId={}", problemId);
         long startTime = System.currentTimeMillis();
         Problem problem = getProblemUseCase.getProblem(problemId);
         long fetchTimeMs = System.currentTimeMillis() - startTime;
 
-        System.out.println("문제 조회 시간: " + fetchTimeMs + "ms");
+        logger.info("문제 조회 완료: problemId={}, 조회 시간={}ms", problemId, fetchTimeMs);
         ProblemResponseDto responseDto = problemMapper.toResponseDto(problem);
         
         return ResponseEntity.ok(responseDto);
