@@ -18,11 +18,10 @@ import com.algoanalyzer.problem.application.mapper.ProblemMapper;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = "analysis")
-public class AnalyzeProblemService implements AnalyzeProblemUseCase{
+public class AnalyzeProblemService implements AnalyzeProblemUseCase {
     private final ProblemAnalysisRepository problemAnalysisRepository;
     private final AnalyzeProblemClient client;
     private final GetProblemUseCase getProblemUseCase;
@@ -33,29 +32,36 @@ public class AnalyzeProblemService implements AnalyzeProblemUseCase{
     @Cacheable(key = "#problemId", unless = "#result.problemId == null")
     public ProblemAnalysis analyzeProblem(Long problemId) {
         return problemAnalysisRepository.findByProblemId(problemId)
-            .orElseGet(() -> doAnalyzeWithLock(problemId));
+            .orElseGet(() -> performAnalysisWithLock(problemId));
     }
 
-    private ProblemAnalysis doAnalyzeWithLock(Long problemId) {
+    private ProblemAnalysis performAnalysisWithLock(Long problemId) {
         String redisKey = "analyzing:problem:" + problemId;
+        if (!acquireLock(redisKey)) {
+            return waitForAnalysisCompletion(redisKey, problemId);
+        }
+        return executeAnalysis(redisKey, problemId);
+    }
 
-        Boolean isLockAcquired = Boolean.TRUE.equals(
+    private boolean acquireLock(String redisKey) {
+        return Boolean.TRUE.equals(
             redisTemplate.opsForValue().setIfAbsent(redisKey, "IN_PROGRESS", Duration.ofMinutes(3))
         );
+    }
 
-        if (!isLockAcquired) {
-            // 다른 요청이 이미 분석 중
-            while (Boolean.TRUE.equals(redisTemplate.hasKey(redisKey))) {
-                try {
-                    Thread.sleep(500); // 100ms 대기
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+    private ProblemAnalysis waitForAnalysisCompletion(String redisKey, Long problemId) {
+        while (Boolean.TRUE.equals(redisTemplate.hasKey(redisKey))) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
-            return problemAnalysisRepository.findByProblemId(problemId)
-                .orElseThrow(() -> new RuntimeException("문제 분석 결과가 없거나 TTL이 만료됨."));
         }
+        return problemAnalysisRepository.findByProblemId(problemId)
+            .orElseThrow(() -> new RuntimeException("문제 분석 결과가 없거나 TTL이 만료됨."));
+    }
 
+    private ProblemAnalysis executeAnalysis(String redisKey, Long problemId) {
         try {
             System.out.println("문제 분석 시작");
             Problem problem = getProblemUseCase.getProblem(problemId);
@@ -66,6 +72,5 @@ public class AnalyzeProblemService implements AnalyzeProblemUseCase{
         } finally {
             redisTemplate.delete(redisKey);
         }
-        
     }
 }
