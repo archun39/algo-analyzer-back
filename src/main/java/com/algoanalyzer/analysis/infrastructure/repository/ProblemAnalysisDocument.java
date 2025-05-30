@@ -11,6 +11,9 @@ import lombok.Builder;
 @Document(collection = "analysis_level_1")
 public class ProblemAnalysisDocument {
     @Id
+    private String id;
+
+    @Indexed(unique = true)
     private Long problemId;
 
     private String timeComplexity;
