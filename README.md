@@ -20,9 +20,11 @@
 
 ## 기술 스택
 
-- **백엔드 프레임워크**: Java 17, Spring Boot 3.x
-- **데이터 저장소**: MongoDB Atlas (Spring Data MongoDB)
+- **백엔드 프레임워크**: Java 17, Spring Boot 2.7.5
+- **데이터 저장소**: MongoDB Atlas (Spring Data MongoDB, spring-boot-starter-data-mongodb)
+- **캐시/큐**: Redis (Spring Data Redis, spring-boot-starter-data-redis)
 - **API 연동**: solved.ac API, FastAPI (문제 분석 서버)
+- **API 문서화**: springdoc-openapi-ui 1.6.15
 - **Docker**: Dockerfile 및 Docker Compose를 활용하여 서비스 컨테이너화
 - **기타**: Spring Data, SLF4J, Lombok, Jsoup(크롤링)
 
@@ -134,6 +136,35 @@ algo-analyzer-back/
 
 - **MongoDB Atlas IP 화이트리스트**: Atlas 클러스터에 접속하기 위해 현재 머신 혹은 서버의 IP 주소를 Atlas에서 허용해야 합니다.
 - **데이터 보안**: 환경 변수 및 민감 정보는 별도의 `.env` 파일로 관리하고 Git 저장소에는 포함시키지 않도록 주의합니다.
+
+## 주요 변경 사항 및 주의사항 (2024.06)
+
+### MongoDB PK 구조 변경
+- 기존에는 problemId가 MongoDB의 PK(Primary Key)로 사용되었으나, 이제는 MongoDB의 ObjectId(`id`)가 내부 PK로 사용됩니다.
+- problemId는 비즈니스 키로, `@Indexed(unique = true)`로 유니크 인덱스가 적용되어 있습니다.
+- 이 변경으로 인해 기존 데이터와 새로운 스키마가 충돌할 수 있으므로, **DB 초기화(컬렉션 삭제) 또는 데이터 마이그레이션**이 필요합니다.
+
+#### 개발/테스트 환경에서 DB 초기화 방법
+1. MongoDB Atlas 콘솔 또는 mongosh로 접속
+2. 아래 명령어로 컬렉션 삭제
+   ```js
+   use algoanalyzer
+   db.analysis_level_1.drop()
+   db.problem.drop()
+   ```
+
+---
+
+## RESTful API 엔드포인트 예시
+
+### 백준 문제 분석 요청
+- **POST /api/problems/{problemId}/analysis**
+- PathVariable로 problemId만 전달 (RequestBody 불필요)
+- 예시:
+  ```bash
+  curl -X POST http://localhost:8080/api/problems/1005/analysis
+  ```
+- 성공 시 문제 분석 결과(JSON) 반환
 
 ## 추가 정보
 
