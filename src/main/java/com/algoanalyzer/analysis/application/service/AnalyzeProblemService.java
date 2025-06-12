@@ -50,7 +50,11 @@ public class AnalyzeProblemService implements AnalyzeProblemUseCase {
     }
 
     private ProblemAnalysis waitForAnalysisCompletion(String redisKey, Long problemId) {
+        long deadline = System.currentTimeMillis() + 10000;
         while (Boolean.TRUE.equals(redisTemplate.hasKey(redisKey))) {
+            if (System.currentTimeMillis() > deadline) {
+                throw new RuntimeException("문제 분석 시간이 초과됨.");
+            }
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -67,8 +71,8 @@ public class AnalyzeProblemService implements AnalyzeProblemUseCase {
             Problem problem = getProblemUseCase.getProblem(problemId);
             ProblemAnalysisRequestDto dto = problemMapper.toRequestDto(problem);
             ProblemAnalysis pa = client.callPythonApi(dto);
-            problemAnalysisRepository.save(pa);
-            return pa;
+                problemAnalysisRepository.save(pa);
+                return pa;
         } finally {
             redisTemplate.delete(redisKey);
         }

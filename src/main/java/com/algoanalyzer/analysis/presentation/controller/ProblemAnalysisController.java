@@ -21,7 +21,7 @@ public class ProblemAnalysisController {
     private final AnalyzeProblemUseCase analyzeProblemUseCase;
     private final ProblemAnalysisMapper problemAnalysisMapper;
     private static final Logger logger = LoggerFactory.getLogger(ProblemAnalysisController.class);
-
+    
     @PostMapping("/{problemId}/analysis")
     public ResponseEntity<ProblemAnalysisResponseDto> analyzeProblem(
         @PathVariable Long problemId) {
